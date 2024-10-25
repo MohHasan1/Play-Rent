@@ -1,0 +1,10 @@
+[
+  { "genre": "Action" },
+  { "genre": "Adventure" },
+  { "genre": "Role-Playing" },
+  { "genre": "Simulation" },
+  { "genre": "Strategy" },
+  { "genre": "Sports" },
+  { "genre": "Puzzle" },
+  { "genre": "Horror" }
+]
