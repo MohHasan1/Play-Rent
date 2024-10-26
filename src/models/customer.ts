@@ -1,14 +1,14 @@
 import Joi from "joi";
-import { Schema, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
-const customerSchema = new Schema({
+const customerSchema = new Schema<ICustomer>({
   name: { type: String, minlength: 2, maxlength: 20, required: true },
   isPremium: { type: Boolean, default: false },
   phone: { type: String, minlength: 9, maxlength: 15, required: true },
 });
-export const Customer = model("Customer", customerSchema);
+export const Customer = model<ICustomer>("Customer", customerSchema);
 
-export function validateCustomer(customer: CustomerType) {
+export function validateCustomer(customer: ICustomer) {
   const customerSchema = Joi.object({
     name: Joi.string().min(3).max(20).required(),
     isPremium: Joi.boolean().default(false),
@@ -18,7 +18,7 @@ export function validateCustomer(customer: CustomerType) {
   return customerSchema.validate(customer);
 }
 
-type CustomerType = {
+interface ICustomer extends Document {
   name: string;
   isPremium: Boolean;
   phone: string;

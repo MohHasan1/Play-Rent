@@ -1,13 +1,13 @@
 import Joi from "joi";
-import { Schema, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
-const genreSchema = new Schema({
+export const genreSchema = new Schema<IGenre>({
   genre: { type: String, required: true, minlength: 2, maxlength: 20 },
 });
 
 export const Genre = model("Genre", genreSchema);
 
-export function validateGenre(genre: Genre) {
+export function validateGenre(genre: IGenre) {
   const GenreSchema = Joi.object({
     genre: Joi.string().min(3).max(20).required(),
   });
@@ -15,6 +15,6 @@ export function validateGenre(genre: Genre) {
   return GenreSchema.validate(genre);
 }
 
-type Genre = {
+export interface IGenre extends Document {
   genre: string;
-};
+}

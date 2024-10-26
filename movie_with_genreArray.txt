@@ -1,0 +1,65 @@
+import { Schema, Document, model } from "mongoose";
+import { genreSchema } from "./genre";
+import Joi from "joi";
+
+const movieSchema = new Schema<IMovie>({
+  title: {
+	type: String,
+    required: true,
+    trim: true,
+    minlength: 1,
+    maxlength: 40,
+  },
+  genres: {
+	type: [genreSchema],
+    require: true,
+  },
+  numberInStock: {
+	type: Number,
+    required: true,
+    min: 0,
+  },
+  inStock: {
+	type: Boolean,
+    default: function () {
+      return this.numberInStock > 0;
+    },
+  },
+  dailyRentalRate: {
+	type: Number,
+    required: true,
+    min: 0,
+    max: 255,
+  },
+});
+
+// Hook to update `inStock` based on `numberInStock` before each save
+movieSchema.pre<IMovie>("save", function (next) {
+  this.inStock = this.numberInStock > 0;
+  next();
+});
+
+export const Movie = model<IMovie>("Movie", movieSchema);
+
+export function validateMovie(movie: IMovie) {
+  const movieSchema = Joi.object({
+    title: Joi.string().min(1).max(40).required(),
+    genres: Joi.array()
+      .items(Joi.string())
+      .required()
+      .message("Please add a array of genre ID"),
+    numberInStock: Joi.number().min(0).required(),
+    inStock: Joi.boolean().default(true),
+    dailyRentalRate: Joi.number().min(0).max(255).required(),
+  });
+
+  return movieSchema.validate(movie);
+}
+
+interface IMovie extends Document {
+  title: string;
+  genres: (typeof genreSchema)[];
+  numberInStock: number;
+  inStock: boolean;
+  dailyRentalRate: number;
+}
