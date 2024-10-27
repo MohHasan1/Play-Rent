@@ -2,7 +2,7 @@ import { Schema, Document, model } from "mongoose";
 import { genreSchema } from "./genre";
 import Joi from "joi";
 
-const movieSchema = new Schema<IMovie>({
+const gameSchema = new Schema<IGame>({
   title: {
     type: String,
     required: true,
@@ -34,15 +34,15 @@ const movieSchema = new Schema<IMovie>({
 });
 
 // Hook to update `inStock` based on `numberInStock` before each save
-movieSchema.pre<IMovie>("save", function (next) {
+gameSchema.pre<IGame>("save", function (next) {
   this.inStock = this.numberInStock > 0;
   next();
 });
 
-export const Movie = model<IMovie>("Movie", movieSchema);
+export const Game = model<IGame>("Game", gameSchema);
 
-export function validateMovie(movie: IMovie) {
-  const movieSchema = Joi.object({
+export function validateGame(game: IGame) {
+  const gameSchema = Joi.object({
     title: Joi.string().min(1).max(40).required(),
     genre: Joi.string().required(),
     numberInStock: Joi.number().min(0).required(),
@@ -50,10 +50,10 @@ export function validateMovie(movie: IMovie) {
     dailyRentalRate: Joi.number().min(0).max(255).required(),
   });
 
-  return movieSchema.validate(movie);
+  return gameSchema.validate(game);
 }
 
-interface IMovie extends Document {
+interface IGame extends Document {
   title: string;
   genre: typeof genreSchema;
   numberInStock: number;

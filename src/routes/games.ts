@@ -1,16 +1,16 @@
 import express from "express";
-import { Movie, validateMovie } from "../models/movie";
+import { Game, validateGame } from "../models/game";
 import { Genre } from "../models/genre";
 
 const router = express.Router();
 
 router.get("/", async (_, res) => {
-  const movies = await Movie.find().sort("name");
+  const movies = await Game.find().sort("name");
   res.send(movies);
 });
 
 router.get("/:id", async (req, res) => {
-  const movie = await Movie.findById(req.params.id);
+  const movie = await Game.findById(req.params.id);
 
   if (!movie) {
     res.status(404).send("The movie with the given ID was not found.");
@@ -21,7 +21,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validateMovie(req.body);
+  const { error } = validateGame(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
     return;
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
   }
 
   // hybrid - embedding and ref
-  let movie = new Movie({
+  let movie = new Game({
     title: req.body.title,
     genre: {
       _id: genre._id,
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { error } = validateMovie(req.body);
+  const { error } = validateGame(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
     return;
@@ -63,7 +63,7 @@ router.put("/:id", async (req, res) => {
     return;
   }
 
-  const movie = await Movie.findByIdAndUpdate(
+  const movie = await Game.findByIdAndUpdate(
     req.params.id,
     {
       title: req.body.title,
@@ -87,7 +87,7 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  const movie = await Movie.findByIdAndDelete(req.params.id);
+  const movie = await Game.findByIdAndDelete(req.params.id);
 
   if (!movie) {
     res.status(404).send("The movie with the given ID was not found.");
