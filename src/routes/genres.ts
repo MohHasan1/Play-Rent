@@ -1,5 +1,7 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { Genre, validateGenre } from "../models/genre";
+import auth from "../middlewares/auth";
+import admin from "../middlewares/admin";
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(genre);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   // validate the body:
   const { error } = validateGenre(req.body);
   if (error) {
@@ -36,7 +38,7 @@ router.post("/", async (req, res) => {
   res.status(201).send(newGenre);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   // validate the body:
   const { error } = validateGenre(req.body);
   if (error) {
@@ -60,7 +62,7 @@ router.put("/:id", async (req, res) => {
   res.status(200).send(genre);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, admin], async (req: Request, res: Response) => {
   // Delete the resource:
   const genre = await Genre.findByIdAndDelete(req.params.id);
 

@@ -2,8 +2,7 @@ import express from "express";
 import { Rental, validateRental } from "../models/rental";
 import { Customer } from "../models/customer";
 import { Game } from "../models/game";
-
-import { startSession } from "mongoose";
+import auth from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -12,7 +11,7 @@ router.get("/", async (_, res) => {
   res.send(rentals);
 });
 
-router.post("/", async (req, res) => {
+router.post("/",auth, async (req, res) => {
   const { error } = validateRental(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
