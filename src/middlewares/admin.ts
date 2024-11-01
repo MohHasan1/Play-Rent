@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { JwtPayload, verify } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 
 // Define a custom type for the user payload
 interface UserPayload extends JwtPayload {

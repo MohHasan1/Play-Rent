@@ -7,6 +7,8 @@ import auth from "../middlewares/auth";
 const router = express.Router();
 
 router.get("/", async (_, res) => {
+  // throw new Error("rent not working")
+
   const rentals = await Rental.find().sort("-rentalDate");
   res.send(rentals);
 });

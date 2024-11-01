@@ -6,19 +6,21 @@ import auth from "../middlewares/auth";
 const router = express.Router();
 
 router.get("/", async (_, res) => {
-  const movies = await Game.find().sort("name");
-  res.send(movies);
+  // throw new Error("ggg not working")
+
+  const games = await Game.find().sort("name");
+  res.send(games);
 });
 
 router.get("/:id", async (req, res) => {
-  const movie = await Game.findById(req.params.id);
+  const games = await Game.findById(req.params.id);
 
-  if (!movie) {
-    res.status(404).send("The movie with the given ID was not found.");
+  if (!games) {
+    res.status(404).send("The games with the given ID was not found.");
     return;
   }
 
-  res.send(movie);
+  res.send(games);
 });
 
 router.post("/", auth, async (req, res) => {
@@ -36,7 +38,7 @@ router.post("/", auth, async (req, res) => {
   }
 
   // hybrid - embedding and ref
-  let movie = new Game({
+  let game = new Game({
     title: req.body.title,
     genre: {
       _id: genre._id,
@@ -46,9 +48,9 @@ router.post("/", auth, async (req, res) => {
     inStock: req.body?.inStock,
     dailyRentalRate: req.body.dailyRentalRate,
   });
-  movie = await movie.save();
+  game = await game.save();
 
-  res.send(movie);
+  res.send(game);
 });
 
 router.put("/:id", auth, async (req, res) => {
@@ -64,7 +66,7 @@ router.put("/:id", auth, async (req, res) => {
     return;
   }
 
-  const movie = await Game.findByIdAndUpdate(
+  const games = await Game.findByIdAndUpdate(
     req.params.id,
     {
       title: req.body.title,
@@ -79,23 +81,23 @@ router.put("/:id", auth, async (req, res) => {
     { new: true }
   );
 
-  if (!movie) {
+  if (!games) {
     res.status(404).send("The movie with the given ID was not found.");
     return;
   }
 
-  res.send(movie);
+  res.send(games);
 });
 
 router.delete("/:id", auth, async (req, res) => {
-  const movie = await Game.findByIdAndDelete(req.params.id);
+  const games = await Game.findByIdAndDelete(req.params.id);
 
-  if (!movie) {
-    res.status(404).send("The movie with the given ID was not found.");
+  if (!games) {
+    res.status(404).send("The game with the given ID was not found.");
     return;
   }
 
-  res.send(movie);
+  res.send(games);
 });
 
 export default router;
