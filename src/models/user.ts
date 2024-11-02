@@ -34,12 +34,11 @@ const userSchema = new Schema<IUser>({
 });
 
 // token gen
-userSchema.methods.generateAuthToken = function (): string {
+userSchema.methods.generateAuthToken = function () {
   const token = sign(
     { _id: this._id, isAdmin: this.isAdmin },
     process.env.JWT_SECRET!
   );
-  console.log(token);
   return token;
 };
 
