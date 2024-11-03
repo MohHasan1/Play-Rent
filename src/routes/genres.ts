@@ -2,13 +2,13 @@ import express, { Request, Response } from "express";
 import { Genre, validateGenre } from "../models/genre";
 import auth from "../middlewares/auth";
 import admin from "../middlewares/admin";
+import validateObjectId from "../middlewares/validateObjectIs";
 // import "express-async-errors";
 // import asyncMiddleware from "../middlewares/async";
 
 const router = express.Router();
 
-
-router.get("/", async (_, res) => {
+router.get("/", validateObjectId, async (_, res) => {
   // throw new Error("genre not working")
   const genres = await Genre.find().sort("genre");
   res.send(genres);
@@ -42,7 +42,7 @@ router.post("/", auth, async (req, res) => {
   res.status(201).send(newGenre);
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", validateObjectId, auth, async (req, res) => {
   // validate the body:
   const { error } = validateGenre(req.body);
   if (error) {
@@ -66,7 +66,7 @@ router.put("/:id", auth, async (req, res) => {
   res.status(200).send(genre);
 });
 
-router.delete("/:id", [auth, admin], async (req: Request, res: Response) => {
+router.delete("/:id", [auth, admin, validateObjectId], async (req: Request, res: Response) => {
   // Delete the resource:
   const genre = await Genre.findByIdAndDelete(req.params.id);
 
@@ -79,3 +79,4 @@ router.delete("/:id", [auth, admin], async (req: Request, res: Response) => {
 });
 
 export default router;
+ 

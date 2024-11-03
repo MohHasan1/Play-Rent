@@ -8,11 +8,12 @@ import games from "../routes/games";
 import genres from "../routes/genres";
 import rentals from "../routes/rentals";
 import users from "../routes/users";
+import logger from "../utils/logger";
 
 const routes = (app: Express) => {
   // app.get("env") === process.env.NODE_ENV
   if (process.env.NODE_ENV === "development") {
-    console.log("Logging enabled ...");
+    logger.info("Logging enabled ...");
     app.use(logFn);
   }
   app.use(express.json());

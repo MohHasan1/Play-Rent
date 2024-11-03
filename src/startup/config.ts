@@ -6,6 +6,10 @@ const config = () => {
     logger.error("FATAL ERROR: No JWT_SECRET Key");
     throw new Error("FATAL ERROR: No JWT_SECRET Key");
   }
+  if (!process.env.MONGO_DB_URL) {
+    logger.error("FATAL ERROR: No MongoDB Url");
+    throw new Error("FATAL ERROR: No MongoDB Url");
+  }
 };
 
 export default config;
