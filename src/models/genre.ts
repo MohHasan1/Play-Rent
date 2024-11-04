@@ -2,7 +2,7 @@ import Joi from "joi";
 import { Document, Schema, model } from "mongoose";
 
 export const genreSchema = new Schema<IGenre>({
-  genre: { type: String, required: true, minlength: 2, maxlength: 20 },
+  genre: { type: String, required: true, minlength: 3, maxlength: 20 },
 });
 
 export const Genre = model("Genre", genreSchema);

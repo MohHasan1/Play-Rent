@@ -8,13 +8,13 @@ import validateObjectId from "../middlewares/validateObjectIs";
 
 const router = express.Router();
 
-router.get("/", validateObjectId, async (_, res) => {
+router.get("/", async (_, res) => {
   // throw new Error("genre not working")
   const genres = await Genre.find().sort("genre");
   res.send(genres);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   // Find the resource:
   const genre = await Genre.findById(req.params.id);
 
@@ -42,7 +42,7 @@ router.post("/", auth, async (req, res) => {
   res.status(201).send(newGenre);
 });
 
-router.put("/:id", validateObjectId, auth, async (req, res) => {
+router.put("/:id",[auth, validateObjectId], async (req: Request, res: Response) => {
   // validate the body:
   const { error } = validateGenre(req.body);
   if (error) {

@@ -1,6 +1,6 @@
 import express from "express";
 import { User } from "../models/user";
-import { compare, genSalt, hash } from "bcrypt";
+import { compare } from "bcrypt";
 import Joi from "joi";
 
 const router = express.Router();
@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
   }
 
   //1.  is there any user with the given email - use 400 (bad req) - Do not provide specific details to the user
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email }).select("_id, email password");
   if (!user) {
     res.status(400).send("Invalid Email or Password.");
     return;

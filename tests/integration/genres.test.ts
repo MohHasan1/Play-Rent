@@ -2,15 +2,18 @@
 import request from "supertest";
 import { Genre } from "../../src/models/genre";
 import { app, server } from "../../src/index";
+import { User } from "../../src/models/user";
 
 describe("/api/genres", () => {
   afterEach(async () => {
     // close the server
     server.close();
-
     // remove all the genre docs:
     await Genre.deleteMany({});
   });
+
+  
+
 
   describe("GET /", () => {
     it("should return all genres", async () => {
@@ -60,7 +63,91 @@ describe("/api/genres", () => {
   });
 
   describe("POST /", () => {
-    
+    let token: string;
+    let genre = { genre: "genre1" };
 
-  })
+    const exec = async () => {
+      return await request(app)
+        .post("/api/genres")
+        .set("x-auth-token", token)
+        .send(genre);
+    };
+
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+    });
+
+    it("should return a 401 if client is not login", async () => {
+      token = "";
+      const res = await exec();
+
+      //assertion
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 400 if genre is less than 3 characters", async () => {
+      // Generate token
+      // const token = new User().generateAuthToken();
+      // Send request
+      // const res = await request(app)
+      //   .post("/api/genres")
+      //   .set("x-auth-token", token)
+      //   .send(genre);
+
+      // Define invalid genre
+      genre.genre = "12"; // Length < 3
+
+      // Send request
+      const res = await exec();
+
+      // Check response status
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 400 in genre is more than 20 characters", async () => {
+      // token
+      // const token = new User().generateAuthToken();
+
+      genre.genre = new Array(22).join("g");
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it("should save the genre in mongodb if its valid", async () => {
+      // const genre = { genre: "genre1" };
+      // const res = await request(app)
+      //   .post("/api/genres")
+      //   .set("x-auth-token", token)
+      //   .send(genre);
+
+      genre = { genre: "genre1" };
+
+      const res = await exec();
+      const genreFromDB = await Genre.findOne(genre);
+      // const genreFromDB = (await Genre.find({ genre: genreName }))[0];
+
+      expect(res.status).toBe(201);
+      expect(genreFromDB).not.toBeNull();
+      expect(genreFromDB).toHaveProperty("genre", "genre1");
+    });
+
+    it("should return the genre its valid", async () => {
+      // const token = new User().generateAuthToken();
+      // const genre = { genre: "genre1" };
+      // const res = await request(app)
+      //   .post("/api/genres")
+      //   .set("x-auth-token", token)
+      //   .send(genre);
+
+      genre = { genre: "genre1" };
+
+      const res = await exec();
+
+      expect(res.status).toBe(201);
+      expect(res.body).toHaveProperty("genre", "genre1");
+      expect(res.body).toHaveProperty("_id");
+    });
+  });
 });

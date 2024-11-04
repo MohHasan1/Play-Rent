@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "predev": "npm run build",
     "dev": "concurrently \"npx tsc -w\" \"nodemon dist/index.js\"",
-    "test": "jest --watchAll --verbose --detectOpenHandles"
+    "test": "jest --watchAll --verbose --detectOpenHandles --coverage"
   },
   "keywords": [],
   "author": "Hasan",
